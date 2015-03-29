@@ -147,7 +147,8 @@ viewPreferences m =
 
 
 viewLogo m = div[class "text-center"] [
-      , span [ class "fa fa-plug", style [("font-size", "20rem")] ] []                   ]
+             span [ class "fa fa-plug", style [("font-size", "20rem")] ] []
+             ]
 
 
 

@@ -18,11 +18,10 @@ executable         debug
   ghc-options:     -Wall -O3 -threaded -rtsopts
   build-depends:       base >=4.7
                      , text >=1.2
-                     , lens >=4.8
                      , time >=1.4
                      , wai >=3.0.2.3
                      , wai-extra
-                     , bytestring >= 0.10.6
+                     , bytestring >= 0.10.4
                      , http-types
                      , warp >= 3.0.10
                      , containers
