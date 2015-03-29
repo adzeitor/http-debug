@@ -903,7 +903,6 @@ Elm.Debug.make = function (_elm) {
          return $Maybe.Nothing;
       }();
    });
-   var wsurl = "ws://localhost:9160";
    var getLocation = _P.portIn("getLocation",
    function (v) {
       return typeof v === "string" || typeof v === "object" && v instanceof String ? v : _U.badPort("a string",
@@ -1361,13 +1360,11 @@ Elm.Debug.make = function (_elm) {
    var server = function () {
       var url = A2($Basics._op["++"],
       "ws://",
-      A2($Basics._op["++"],
-      getLocation,
-      ":9160"));
+      getLocation);
       return $Signal.map(function ($) {
          return Sockets($Json$Decode.decodeString(parseLog)($));
       })(A2($WebSocket.connect,
-      wsurl,
+      url,
       noOut));
    }();
    var signals = $Signal.mergeMany(_L.fromArray([server
@@ -1416,7 +1413,6 @@ Elm.Debug.make = function (_elm) {
                        ,updates: updates
                        ,noOut: noOut
                        ,server: server
-                       ,wsurl: wsurl
                        ,update: update
                        ,signals: signals
                        ,main: main

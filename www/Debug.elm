@@ -228,15 +228,14 @@ noOut = Signal.sampleOn (Signal.constant False)
      <| Signal.constant ""
 
 server =
-    let url = "ws://" ++ getLocation ++ ":9160"
+    let url = "ws://" ++ getLocation
     in Signal.map (Sockets << decodeString parseLog)
-    <| WS.connect wsurl noOut
+    <| WS.connect url noOut
 
 
 port getLocation : String
 
 
-wsurl = "ws://localhost:9160"
 
 
 update : Action -> Model -> Model

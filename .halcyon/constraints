@@ -97,6 +97,7 @@ wai-3.0.2.3
 wai-app-static-3.0.0.6
 wai-extra-3.0.4.2
 wai-logger-2.2.3
+wai-websockets-3.0.0.5
 warp-3.0.10
 word8-0.1.1
 zlib-0.5.4.2

@@ -1,30 +1,32 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import           Control.Concurrent
+import           Control.Concurrent.STM
+import           Control.Exception
 import           Control.Monad
 import qualified Data.ByteString.Char8           as BS
 import qualified Data.ByteString.Lazy            as BL
 import qualified Data.ByteString.Lazy.Builder    as BL
-import qualified Data.Text                       as T
-import qualified Data.Text.Encoding              as T
-import qualified Data.Text.Lazy                  as TL
-import qualified Data.Text.Lazy.Encoding         as TL
-import           Control.Concurrent
-import           Control.Concurrent.STM
-import           Control.Exception
 import           Data.IORef
 import           Data.List                       (find)
 import           Data.Maybe                      (listToMaybe)
 import           Data.Monoid                     ((<>))
 import qualified Data.Set                        as Set
+import qualified Data.Text                       as T
+import qualified Data.Text.Encoding              as T
+import qualified Data.Text.Lazy                  as TL
+import qualified Data.Text.Lazy.Encoding         as TL
 import           Data.Time                       (getCurrentTime)
 import qualified Data.Vector                     as V
 import           Network.HTTP.Types
 import           Network.Wai
-import           Network.Wai.Handler.Warp        (run)
+import qualified Network.Wai.Handler.Warp        as Warp
+import qualified Network.Wai.Handler.WebSockets  as Warp
 import           Network.Wai.Middleware.HttpAuth
 import           Network.Wai.Parse               (FileInfo (..), lbsBackEnd,
                                                   parseRequestBody)
+import qualified Network.WebSockets              as WS
 import           System.Environment              (getEnv)
 import           System.Random
 import           Text.Blaze.Html.Renderer.Utf8
@@ -32,8 +34,8 @@ import           Text.Read                       (readMaybe)
 
 import           Types
 --- TODO:...
-import qualified WS
 import           View.Main
+import qualified WS
 
 router :: App -> Application
 router app rq respond =
@@ -94,7 +96,7 @@ logEventWithFiles app rq files = do
                  , createdAt = now
                  , logId     = nextId
                  , logFiles  = files}
-  modifyIORef' (logs app)  (\list -> V.force (V.slice 0 (maxLogSize app) (V.cons log' list)))
+  modifyIORef' (logs app)  (\list -> V.force (V.take (maxLogSize app) (V.cons log' list)))
   atomically $ writeTChan (logChan app) log'
   -- FIXME: return body for queries that needs it
   return log'
@@ -179,8 +181,13 @@ badApp app rq respond = do
 
 main :: IO ()
 main = do
+
+
   port <- fmap read $ getEnv "PORT"
   app <- initialApp
-  _ <- forkIO $ WS.init app
+--  _ <- forkIO $ WS.init app
   putStrLn $ "http://localhost:" <> show port
-  run port (router app)
+--  run port (router app)
+
+  Warp.runSettings (Warp.setPort port Warp.defaultSettings) $
+    Warp.websocketsOr WS.defaultConnectionOptions (WS.application app) (router app)
