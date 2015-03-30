@@ -9,7 +9,7 @@
       "value": "https://github.com/mietek/haskell-on-heroku"
     },
     "HTTP_DEBUG_HOME": {
-      "description": "test environment"
+      "MAX_MESSAGES": "Miximum number of messages in memory"
     }
   }
 }
