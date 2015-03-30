@@ -183,12 +183,9 @@ badApp app rq respond = do
 
 main :: IO ()
 main = do
-
   port'   <- fmap (readMaybe =<<) $ lookupEnv "PORT"
   wsPort' <- fmap (readMaybe =<<) $ lookupEnv "WEBSOCKET_PORT"
   app <- initialApp
---  _ <- forkIO $ WS.init app
---  run port (router app)
 
   case (port',wsPort') of
    (Just port, Just wsPort) | port /= wsPort -> do

@@ -12,7 +12,7 @@
       "description": "build dependencies",
       "value" : 0,
       "required":true
-    }
+    },
     "MAX_MESSAGES": {
       "description": "Miximum number of messages in memory",
       "value" : "128",
