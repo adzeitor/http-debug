@@ -8,8 +8,15 @@
       "description": "Heroku buildpack for deploying Haskell apps",
       "value": "https://github.com/mietek/haskell-on-heroku"
     },
-    "HTTP_DEBUG_HOME": {
-      "MAX_MESSAGES": "Miximum number of messages in memory"
+    "HALCYON_NO_BUILD_DEPENDENCIES": {
+      "description": "build dependencies",
+      "value" : 0,
+      "required":true
+    }
+    "MAX_MESSAGES": {
+      "description": "Miximum number of messages in memory",
+      "value" : "128",
+      "required" : false
     }
   }
 }

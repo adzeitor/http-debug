@@ -228,7 +228,7 @@ noOut = Signal.sampleOn (Signal.constant False)
      <| Signal.constant ""
 
 server =
-    let url = "ws://" ++ getLocation
+    let url = "wss://" ++ getLocation
     in Signal.map (Sockets << decodeString parseLog)
     <| WS.connect url noOut
 

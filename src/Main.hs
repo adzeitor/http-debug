@@ -27,7 +27,7 @@ import           Network.Wai.Middleware.HttpAuth
 import           Network.Wai.Parse               (FileInfo (..), lbsBackEnd,
                                                   parseRequestBody)
 import qualified Network.WebSockets              as WS
-import           System.Environment              (getEnv)
+import           System.Environment              (lookupEnv)
 import           System.Random
 import           Text.Blaze.Html.Renderer.Utf8
 import           Text.Read                       (readMaybe)
@@ -179,15 +179,25 @@ badApp app rq respond = do
         flush
 
 
+
+
 main :: IO ()
 main = do
 
-
-  port <- fmap read $ getEnv "PORT"
+  port'   <- fmap (readMaybe =<<) $ lookupEnv "PORT"
+  wsPort' <- fmap (readMaybe =<<) $ lookupEnv "WEBSOCKET_PORT"
   app <- initialApp
 --  _ <- forkIO $ WS.init app
-  putStrLn $ "http://localhost:" <> show port
 --  run port (router app)
 
-  Warp.runSettings (Warp.setPort port Warp.defaultSettings) $
-    Warp.websocketsOr WS.defaultConnectionOptions (WS.application app) (router app)
+  case (port',wsPort') of
+   (Just port, Just wsPort) | port /= wsPort -> do
+      putStrLn $ "http://localhost:" <> show port
+      _ <- forkIO $ WS.init wsPort app
+      Warp.run port (router app)
+   (Just port, _) -> do
+      putStrLn $ "http://localhost:" <> show port
+      Warp.runSettings (Warp.setPort port Warp.defaultSettings) $
+        Warp.websocketsOr WS.defaultConnectionOptions (WS.application app) (router app)
+   _ -> do
+      putStrLn "error: add environment variable `PORT=3000 debug`"

@@ -1359,7 +1359,7 @@ Elm.Debug.make = function (_elm) {
    $Json$Decode.list(parseFile)));
    var server = function () {
       var url = A2($Basics._op["++"],
-      "ws://",
+      "wss://",
       getLocation);
       return $Signal.map(function ($) {
          return Sockets($Json$Decode.decodeString(parseLog)($));

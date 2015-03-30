@@ -26,8 +26,7 @@ application app pending = do
     r <- atomically $ readTChan chan
     WS.sendTextData conn (encode r)
 
-init :: App -> IO ()
-init app = do
-  let port = 9160
+init :: Int -> App -> IO ()
+init port app = do
   putStrLn $ "ws://localhost:" ++ show port
   WS.runServer "0.0.0.0" port $ application app
